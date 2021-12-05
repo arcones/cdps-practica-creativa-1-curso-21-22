@@ -6,6 +6,7 @@ import coloredlogs
 import logging
 import json
 import os
+from prepare import prepare
 
 CONFIG_FILE = "auto-p2.json"
 
@@ -59,34 +60,18 @@ if args.orden == 'prepare' and (args.num_serv < 1 or args.num_serv > 5):
     logging.error("\n\n\nERROR:\nEl número de servidores para la orden prepare ha de estar entre 1 y 5\nVuelva a ejecutar el script con un número de servidores correcto\n\n\n")
     raise ValueError()
 
-# Métodos que implementan las órdenes
-def prepare():
-    logging.info(f"Limpiando ficheros de configuración de posibles ejecuciones pasadas")
-    if os.path.exists(f'./{CONFIG_FILE}'):
-        os.remove(f'./{CONFIG_FILE}')
-
-    logging.info(f"Corriendo la orden prepare con num_serv={args.num_serv}")
-    auto_p2_json = open(CONFIG_FILE, "w")
-    num_serv_as_json = json.dumps({"num_serv": args.num_serv}, indent=4)
-    auto_p2_json.write(num_serv_as_json)
-    auto_p2_json.close()
-    logging.info("El fichero json ha sido almacenado")
-
 # Ejecucción del script con los argumentos proporcionados
 if(args.orden == 'prepare'):
-    prepare()
+    prepare(CONFIG_FILE, args.num_serv)
 elif(args.orden == 'launch' or args.orden == 'stop' or args.orden == 'release'):
     if not os.path.exists(f'./{CONFIG_FILE}'):
         logging.error(
             "\n\n\nERROR:\nLas órdenes launch, stop y release necesitan el fichero de configuración generado con la orden prepare. Ejecute primeramente el script con la orden prepare para generarlo\n\n\n")
         raise ValueError()
     else:
-        config_file_contents = open('auto-p2.json').read()
-        num_serv = json.load(config_file_contents)
-        logging.info(
-            f"Corriendo la orden {args.orden} con num_serv={args.num_serv}")
+        with open('auto-p2.json', 'r') as config_file_contents:
+            num_serv = json.load(config_file_contents)
+        logging.info(f"Corriendo la orden {args.orden} con num_serv={args.num_serv}")
 else:
     logging.error(
         "\n\n\nERROR:\nHay un problema con el código del programa. Contacte con el equipo de desarrollo\n\n\n")
-
-
