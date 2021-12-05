@@ -1,0 +1,4 @@
+# TODO Change log level by default
+# TODO Check the script in linux
+# TODO Check more TODOs directly in the code
+# TODO Create methods, etc in the script
