@@ -28,8 +28,9 @@ def _clean_up_from_previous_runs():
         f"Borrando ficheros de configuración de ejecuciones anteriores...")
     i = 1
     while i <= 5:
-        subprocess.call(["rm", f"s{i}.qcow2"])
-        subprocess.call(["rm", f"s{i}.xml"])
+        with open(os.devnull, 'w') as devnull:
+            subprocess.call(["rm", f"s{i}.qcow2"], stdout=devnull)
+            subprocess.call(["rm", f"s{i}.xml"], stdout=devnull)
         i += 1
     logging.info(
         f"Borrandos los ficheros de configuración de ejecuciones anteriores")
