@@ -7,7 +7,10 @@ import coloredlogs
 import logging
 import json
 import os
+
+# Importo el resto de ficheros del programa
 from prepare import prepare
+from cleanup import cleanup
 
 CONFIG_FILE = "auto-p2.json"
 
