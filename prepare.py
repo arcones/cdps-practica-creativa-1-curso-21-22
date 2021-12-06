@@ -3,6 +3,7 @@ import logging
 import coloredlogs
 import os
 import json
+from cleanup import cleanup
 
 # Configuración de los logs
 logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s')
@@ -17,7 +18,7 @@ coloredlogs.install()
 
 
 def prepare(CONFIG_FILE, num_serv):
-    _clean_up_from_previous_runs()
+    cleanup(CONFIG_FILE)
     _save_config_file(CONFIG_FILE, num_serv)
     _create_qcows(num_serv)
     _create_templates(num_serv)

@@ -32,12 +32,13 @@ La orden a ejecutar.
 "launch": Para arrancar las máquinas virtuales y mostrar su consola.
 "stop": Para parar las máquinas virtuales (sin liberarlas).
 "release": Para liberar el escenario, borrando todos los ficheros creados.
+"cleanuo": Para borrar ficheros de configuración de ejecuciones anteriores 
 """
 
 parser.add_argument('orden', help=help_orden, nargs='?',
-                    choices=('prepare', 'launch', 'stop', 'release'))
+                    choices=('prepare', 'launch', 'stop', 'release', 'cleanup'))
 
-parser.add_argument("-n", "--num_serv", help="El número de servidores web a arrancar (de 1 a 5), si este parámetro no se pasa, será 3",
+parser.add_argument("-n", "--num_serv", help="Con la orden prepare, el número de servidores web a arrancar (de 1 a 5), si este parámetro no se pasa, será 3. El número de servidores se guardará para las siguientes órdenes",
                     default=3, required=False, type=int)
 
 args = parser.parse_args()
@@ -64,6 +65,8 @@ if args.orden == 'prepare' and (args.num_serv < 1 or args.num_serv > 5):
 # Ejecucción del script con los argumentos proporcionados
 if(args.orden == 'prepare'):
     prepare(CONFIG_FILE, args.num_serv)
+elif(args.orden == 'cleanup'):
+    cleanup(CONFIG_FILE)
 elif(args.orden == 'launch' or args.orden == 'stop' or args.orden == 'release'):
     if not os.path.exists(f'./{CONFIG_FILE}'):
         logging.error(
