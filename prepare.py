@@ -42,10 +42,10 @@ def _save_config_file(CONFIG_FILE, num_serv):
 
 def _create_qcows(num_serv):
     i = 1
-    while i < num_serv:
+    while i <= num_serv:
         log_info(f"Creando el fichero qcow2 de la máquina {i}")
         subprocess.call(["qemu-img", "create", "-f", "qcow2",
-                        "-b", "cdps-vm-base-pc1.qcow2", f"s{i}.qcow2"])
+                        "-b", "cdps-vm-base-pc1.qcow2", f"s{i}.qcow2"], stdout=subprocess.DEVNULL)
         i += 1
 
     log_info("Los ficheros qcow2 requeridos han sido creados")
@@ -53,19 +53,16 @@ def _create_qcows(num_serv):
 
 def _create_templates(num_serv):
     i = 1
-    while i < num_serv:
+    while i <= num_serv:
         log_info(f"Creando la plantilla de configuración de la máquina {i}")
         subprocess.call(["cp", "plantilla-vm-pc1.xml", f"s{i}.xml"])
 
         with open(f"s{i}.xml", "r") as xml:
             xml_content = xml.read()
 
-        xml_content = xml_content.replace(
-            '<name>XXX</name>', f'<name>s{i}</name>')
-        xml_content = xml_content.replace('<source file="/mnt/tmp/XXX/XXX.qcow2"/>',
-                                          f'<source file="/mnt/tmp/marta.rodrigueza/s{i}.qcow2"/>')  # TODO check which paths are
-        xml_content = xml_content.replace(
-            '<source bridge="XXX"/>', f'<source bridge="LAN2"/>')
+        xml_content = xml_content.replace('<name>XXX</name>', f'<name>s{i}</name>')
+        xml_content = xml_content.replace('/mnt/tmp/XXX/XXX.qcow2',f'{os.getcwd()}/s{i}.qcow2')
+        xml_content = xml_content.replace("bridge='XXX'", f"bridge='LAN2'")
         
         with open(f"s{i}.xml", 'w') as xml:
             xml.write(xml_content)

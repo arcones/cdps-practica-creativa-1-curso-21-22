@@ -6,7 +6,7 @@ LOGGER = logging.getLogger(__name__)
 def init_logs():
     logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s')
     coloredlogs.DEFAULT_LEVEL_STYLES = {
-        "warning": {"color": "orange", "bold": True},
+        "warning": {"color": "yellow", "bold": True},
         "info": {"color": "green", "bold": True},
         "error": {"color": "red", "bold": True},
     }

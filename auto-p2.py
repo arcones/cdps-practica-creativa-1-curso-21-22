@@ -50,9 +50,14 @@ if args.orden != 'prepare' and len(sys.argv) > 2:
     log_error("El número de servidores sólo se debe especificar con la orden prepare")
     raise ValueError()
 
+
 if args.orden == 'prepare' and (args.num_serv < 1 or args.num_serv > 5):
     log_error("El número de servidores para la orden prepare ha de estar entre 1 y 5. Vuelva a ejecutar el script con un número de servidores correcto")
     raise ValueError()
+
+# Mensajes informativos
+if args.orden == 'prepare' and len(sys.argv) == 2:
+    log_warn("Como no se ha especificado el número de servidores para la orden prepare, se usarán 3 servidores que es el valor predeterminado")
 
 # Ejecucción del script con los argumentos proporcionados
 if(args.orden == 'prepare'):
