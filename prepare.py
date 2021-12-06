@@ -17,6 +17,7 @@ def prepare(CONFIG_FILE, num_serv):
     _create_lb_qcow()
     _create_mv_xml(num_serv) # TODO Create also the client C1
     _create_lb_xml()
+    _create_bridges()
 
 
 def _clean_up_from_previous_runs():
@@ -30,25 +31,22 @@ def _clean_up_from_previous_runs():
     log_info("Borrandos los ficheros de configuración de ejecuciones anteriores")
 
 def _save_config_file(CONFIG_FILE, num_serv):
-    log_info("Limpiando ficheros de configuración de posibles ejecuciones pasadas")
-    if os.path.exists(f'./{CONFIG_FILE}'):
-        os.remove(f'./{CONFIG_FILE}')
-
     log_info(f"Corriendo la orden prepare con num_serv={num_serv}")
     auto_p2_json = open(CONFIG_FILE, "w")
     num_serv_as_json = json.dumps({"num_serv": num_serv}, indent=4)
     auto_p2_json.write(num_serv_as_json)
     auto_p2_json.close()
-    log_info("El fichero json ha sido almacenado")
+    log_info("El fichero json de configuración ha sido almacenado")
 
 
 def _create_mv_qcows(num_serv):
     log_info("Creando los ficheros qcow2 requeridos para los servidores...")
     i = 1
     while i <= num_serv:
-        log_info(f"Creando el fichero qcow2 de la máquina {i}")
+        log_info(f"Creando el fichero qcow2 de la máquina {i}...")
         subprocess.call(["qemu-img", "create", "-f", "qcow2",
                         "-b", "cdps-vm-base-pc1.qcow2", f"s{i}.qcow2"], stdout=subprocess.DEVNULL)
+        log_info(f"Creado el fichero qcow2 de la máquina {i}")
         i += 1
 
     log_info("Los ficheros qcow2 requeridos para los servidores han sido creados")
@@ -58,7 +56,7 @@ def _create_mv_xml(num_serv):
     log_info("Creando los ficheros xml de configuración requeridos para los servidores...")
     i = 1
     while i <= num_serv:
-        log_info(f"Creando el fichero xml de configuración de la máquina {i}")
+        log_info(f"Creando el fichero xml de configuración de la máquina {i}...")
         subprocess.call(["cp", "plantilla-vm-pc1.xml", f"s{i}.xml"])
 
         with open(f"s{i}.xml", "r") as xml:
@@ -71,6 +69,7 @@ def _create_mv_xml(num_serv):
         with open(f"s{i}.xml", 'w') as xml:
             xml.write(xml_content)
 
+        log_info(f"Creado el fichero xml de configuración de la máquina {i}")
         i += 1
 
     log_info("Los ficheros xml de configuración requeridos para los servidores han sido creados")
@@ -81,7 +80,7 @@ def _create_lb_qcow():
     log_info("El fichero qcow2 requerido para el balanceador de carga ha sido creado")
 
 def _create_lb_xml():
-    log_info(f"Creando el fichero de configuración del balanceador de carga...")
+    log_info("Creando el fichero de configuración del balanceador de carga...")
     subprocess.call(["cp", "plantilla-vm-pc1.xml", f"lb.xml"])
 
     with open(f"lb.xml", "r") as xml:
@@ -89,10 +88,36 @@ def _create_lb_xml():
 
     xml_content = xml_content.replace('<name>XXX</name>', f'<name>lb</name>')
     xml_content = xml_content.replace('/mnt/tmp/XXX/XXX.qcow2',f'{os.getcwd()}/lb.qcow2')
-    xml_content = xml_content.replace("bridge='XXX'", f"bridge='LAN2'")
+    interface_template = """
+    <interface type='bridge'>
+      <source bridge='XXX'/>
+      <model type='virtio'/>
+    </interface>
+    """
+
+    interfaces_required = """
+    <interface type='bridge'>
+      <source bridge='LAN1'/>
+      <model type='virtio'/>
+    </interface>
+    <interface type='bridge'>
+      <source bridge='LAN2'/>
+      <model type='virtio'/>
+    </interface>
+    """
+
+    xml_content = xml_content.replace(interface_template, interfaces_required)
     
     with open(f"lb.xml", 'w') as xml:
         xml.write(xml_content)
 
 
-    log_info("El fichero xml de configuración requerido han sido creado")
+    log_info("El fichero xml de configuración requerido para el balanceador de carga ha sido creado")
+
+def _create_bridges():
+    log_info(f"Creando los bridges correspondientes a las dos redes virtuales...")
+    subprocess.call(["sudo", "brctl", "addbr", "LAN1"])
+    subprocess.call(["sudo", "brctl", "addbr", "LAN2"])
+    subprocess.call(["sudo", "ifconfig", "LAN1", "up"])
+    subprocess.call(["sudo", "ifconfig", "LAN2", "up"])
+    log_info(f"Creados los bridges correspondientes a las dos redes virtuales")
