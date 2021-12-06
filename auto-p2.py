@@ -39,20 +39,19 @@ args = parser.parse_args()
 
 # Validaciones de los argumentos de entrada al programa
 if len(sys.argv) < 2:
-    log_error("Este script necesita algunos argumentos para ejecutarse\nSi necesita ayuda, ejecute el programa con --help")
+    log_error("Este script necesita algunos argumentos para ejecutarse. Si necesita ayuda, ejecute el programa con --help")
     raise ValueError()
 
 if not args.orden:
-    logging.error("\n\n\nERROR:\nSe debe especificar la orden a realizar\nVuelva a ejecutar el script con la orden (prepare, launch, stop, release) correcta\n\n\n")
+    log_error("Se debe especificar la orden a realizar. Vuelva a ejecutar el script con la orden (prepare, launch, stop, release) correcta")
     raise ValueError()
 
 if args.orden != 'prepare' and len(sys.argv) > 2:
-    logging.error(
-        "\n\n\nERROR:\nEl número de servidores sólo se debe especificar con la orden prepare\n\n\n")
+    log_error("El número de servidores sólo se debe especificar con la orden prepare")
     raise ValueError()
 
 if args.orden == 'prepare' and (args.num_serv < 1 or args.num_serv > 5):
-    logging.error("\n\n\nERROR:\nEl número de servidores para la orden prepare ha de estar entre 1 y 5\nVuelva a ejecutar el script con un número de servidores correcto\n\n\n")
+    log_error("El número de servidores para la orden prepare ha de estar entre 1 y 5. Vuelva a ejecutar el script con un número de servidores correcto")
     raise ValueError()
 
 # Ejecucción del script con los argumentos proporcionados
@@ -62,13 +61,11 @@ elif(args.orden == 'cleanup'):
     cleanup(CONFIG_FILE)
 elif(args.orden == 'launch' or args.orden == 'stop' or args.orden == 'release'):
     if not os.path.exists(f'./{CONFIG_FILE}'):
-        logging.error(
-            "\n\n\nERROR:\nLas órdenes launch, stop y release necesitan el fichero de configuración generado con la orden prepare. Ejecute primeramente el script con la orden prepare para generarlo\n\n\n")
+        log_error("Las órdenes launch, stop y release necesitan el fichero de configuración generado con la orden prepare. Ejecute primeramente el script con la orden prepare para generarlo")
         raise ValueError()
     else:
         with open('auto-p2.json', 'r') as config_file_contents:
             num_serv = json.load(config_file_contents)
-        logging.info(f"Corriendo la orden {args.orden} con num_serv={args.num_serv}")
+        log_info(f"Corriendo la orden {args.orden} con num_serv={args.num_serv}")
 else:
-    logging.error(
-        "\n\n\nERROR:\nHay un problema con el código del programa. Contacte con el equipo de desarrollo\n\n\n")
+    log_error("Hay un problema con el código del programa. Contacte con el equipo de desarrollo")

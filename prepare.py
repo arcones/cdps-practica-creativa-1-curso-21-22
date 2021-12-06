@@ -1,11 +1,10 @@
 import subprocess
-import logging
 import os
 import json
 
 # Importo el resto de ficheros del programa
 from cleanup import cleanup
-from init_logs import init_logs
+from logs import init_logs, log_error, log_warn, log_info
 
 # Configuración de los logs
 init_logs()
@@ -19,48 +18,43 @@ def prepare(CONFIG_FILE, num_serv):
 
 
 def _clean_up_from_previous_runs():
-    logging.info(
-        f"Borrando ficheros de configuración de ejecuciones anteriores...")
+    log_info("Borrando ficheros de configuración de ejecuciones anteriores...")
     i = 1
     while i <= 5:
         with open(os.devnull, 'w') as devnull:
             subprocess.call(["rm", f"s{i}.qcow2"], stdout=devnull)
             subprocess.call(["rm", f"s{i}.xml"], stdout=devnull)
         i += 1
-    logging.info(
-        f"Borrandos los ficheros de configuración de ejecuciones anteriores")
-
+    log_info("Borrandos los ficheros de configuración de ejecuciones anteriores")
 
 def _save_config_file(CONFIG_FILE, num_serv):
-    logging.info(
-        f"Limpiando ficheros de configuración de posibles ejecuciones pasadas")
+    log_info("Limpiando ficheros de configuración de posibles ejecuciones pasadas")
     if os.path.exists(f'./{CONFIG_FILE}'):
         os.remove(f'./{CONFIG_FILE}')
 
-    logging.info(f"Corriendo la orden prepare con num_serv={num_serv}")
+    log_info(f"Corriendo la orden prepare con num_serv={num_serv}")
     auto_p2_json = open(CONFIG_FILE, "w")
     num_serv_as_json = json.dumps({"num_serv": num_serv}, indent=4)
     auto_p2_json.write(num_serv_as_json)
     auto_p2_json.close()
-    logging.info("El fichero json ha sido almacenado")
+    log_info("El fichero json ha sido almacenado")
 
 
 def _create_qcows(num_serv):
     i = 1
     while i < num_serv:
-        logging.info(f"Creando el fichero qcow2 de la máquina {i}")
+        log_info(f"Creando el fichero qcow2 de la máquina {i}")
         subprocess.call(["qemu-img", "create", "-f", "qcow2",
                         "-b", "cdps-vm-base-pc1.qcow2", f"s{i}.qcow2"])
         i += 1
 
-    logging.info("Los ficheros qcow2 requeridos han sido creados")
+    log_info("Los ficheros qcow2 requeridos han sido creados")
 
 
 def _create_templates(num_serv):
     i = 1
     while i < num_serv:
-        logging.info(
-            f"Creando la plantilla de configuración de la máquina {i}")
+        log_info(f"Creando la plantilla de configuración de la máquina {i}")
         subprocess.call(["cp", "plantilla-vm-pc1.xml", f"s{i}.xml"])
 
         with open(f"s{i}.xml", "r") as xml:
@@ -78,4 +72,4 @@ def _create_templates(num_serv):
 
         i += 1
 
-    logging.info("Las plantillas de configuración requeridas han sido creados")
+    log_info("Las plantillas de configuración requeridas han sido creadas")
