@@ -3,27 +3,18 @@
 
 import argparse
 import sys
-import coloredlogs
-import logging
 import json
 import os
 
 # Importo el resto de ficheros del programa
 from prepare import prepare
 from cleanup import cleanup
+from logs import init_logs, log_info, log_error, log_warn 
 
 CONFIG_FILE = "auto-p2.json"
 
 # Configuración de los logs
-logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s')
-logging.basicConfig(level=logging.DEBUG)
-coloredlogs.DEFAULT_LEVEL_STYLES = {
-    "warning": {"color": "orange", "bold": True},
-    "success": {"color": "green", "bold": True},
-    "error": {"color": "red", "bold": True},
-}
-
-coloredlogs.install()
+init_logs()
 
 # Captura de argumentos de entrada al programa
 parser = argparse.ArgumentParser()
@@ -35,7 +26,7 @@ La orden a ejecutar.
 "launch": Para arrancar las máquinas virtuales y mostrar su consola.
 "stop": Para parar las máquinas virtuales (sin liberarlas).
 "release": Para liberar el escenario, borrando todos los ficheros creados.
-"cleanuo": Para borrar ficheros de configuración de ejecuciones anteriores 
+"cleanup": Para borrar ficheros de configuración de ejecuciones anteriores 
 """
 
 parser.add_argument('orden', help=help_orden, nargs='?',
@@ -48,8 +39,7 @@ args = parser.parse_args()
 
 # Validaciones de los argumentos de entrada al programa
 if len(sys.argv) < 2:
-    logging.error(
-        "\n\n\nERROR:\nEste script necesita algunos argumentos para ejecutarse\nSi necesita ayuda, ejecute el programa con --help\n\n\n")
+    log_error("Este script necesita algunos argumentos para ejecutarse\nSi necesita ayuda, ejecute el programa con --help")
     raise ValueError()
 
 if not args.orden:

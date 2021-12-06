@@ -1,22 +1,16 @@
 import subprocess
 import logging
-import coloredlogs
 import os
 import json
+
+# Importo el resto de ficheros del programa
 from cleanup import cleanup
+from init_logs import init_logs
 
 # Configuración de los logs
-logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s')
-logging.basicConfig(level=logging.DEBUG)
-coloredlogs.DEFAULT_LEVEL_STYLES = {
-    "warning": {"color": "orange", "bold": True},
-    "success": {"color": "green", "bold": True},
-    "error": {"color": "red", "bold": True},
-}
+init_logs()
 
-coloredlogs.install()
-
-
+# Punto de entrada
 def prepare(CONFIG_FILE, num_serv):
     cleanup(CONFIG_FILE)
     _save_config_file(CONFIG_FILE, num_serv)

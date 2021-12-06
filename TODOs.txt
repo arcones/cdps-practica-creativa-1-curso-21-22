@@ -1,4 +1,3 @@
 # TODO Change log level by default
-# TODO Centralize log config in one place (both logging and coloredLogs) 
 # TODO Check more TODOs directly in the code
 # TODO Create methods, etc in the script
