@@ -10,6 +10,7 @@ import os
 from prepare import prepare
 from cleanup import cleanup
 from launch import launch 
+from stop import stop
 from logs import init_logs, log_info, log_error, log_warn 
 
 CONFIG_FILE = "auto-p2.json"
@@ -75,5 +76,7 @@ elif(args.orden == 'launch' or args.orden == 'stop' or args.orden == 'release'):
         log_info(f"Corriendo la orden {args.orden} con num_serv={args.num_serv}")
         if(args.orden == 'launch'):
             launch(num_serv)
+        elif(args.orden == 'stop'):
+            stop(num_serv)
 else:
     log_error("Hay un problema con el código del programa. Contacte con el equipo de desarrollo")
