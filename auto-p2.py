@@ -9,6 +9,7 @@ import os
 # Importo el resto de ficheros del programa
 from prepare import prepare
 from cleanup import cleanup
+from launch import launch 
 from logs import init_logs, log_info, log_error, log_warn 
 
 CONFIG_FILE = "auto-p2.json"
@@ -70,7 +71,9 @@ elif(args.orden == 'launch' or args.orden == 'stop' or args.orden == 'release'):
         raise ValueError()
     else:
         with open('auto-p2.json', 'r') as config_file_contents:
-            num_serv = json.load(config_file_contents)
+            num_serv = json.load(config_file_contents)['num_serv']
         log_info(f"Corriendo la orden {args.orden} con num_serv={args.num_serv}")
+        if(args.orden == 'launch'):
+            launch(num_serv)
 else:
     log_error("Hay un problema con el código del programa. Contacte con el equipo de desarrollo")

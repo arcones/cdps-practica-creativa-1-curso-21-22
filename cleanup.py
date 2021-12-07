@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import subprocess
 # Importo el resto de ficheros del programa
 from logs import init_logs, log_error, log_warn, log_info
@@ -37,8 +39,8 @@ def _cleanup_config(CONFIG_FILE):
 
 def _cleanup_bridges():
     log_info("Borrando bridges de ejecuciones anteriores (si existiese)...")
-    subprocess.call(["sudo", "ip", "link", "set", "LAN1", "down"], stdout=subprocess.DEVNULL)
-    subprocess.call(["sudo", "brctl", "delbr", "LAN1"], stdout=subprocess.DEVNULL)
-    subprocess.call(["sudo", "ip", "link", "set", "LAN2", "down"], stdout=subprocess.DEVNULL)
-    subprocess.call(["sudo", "brctl", "delbr", "LAN2"], stdout=subprocess.DEVNULL)
+    subprocess.call(["sudo", "ip", "link", "set", "LAN1", "down"], stderr=subprocess.DEVNULL)
+    subprocess.call(["sudo", "brctl", "delbr", "LAN1"], stderr=subprocess.DEVNULL)
+    subprocess.call(["sudo", "ip", "link", "set", "LAN2", "down"], stderr=subprocess.DEVNULL)
+    subprocess.call(["sudo", "brctl", "delbr", "LAN2"], stderr=subprocess.DEVNULL)
     log_info("Borrados bridges de ejecuciones anteriores")

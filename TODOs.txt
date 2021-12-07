@@ -3,3 +3,4 @@
 # TODO Catch all possible exceptions 
 # TODO Check more TODOs directly in the code
 # TODO Create methods, etc in the script
+# TODO Leer bien el enunciado con todos los anexos y alinearlo!!! 
