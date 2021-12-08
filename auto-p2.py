@@ -6,6 +6,7 @@ import sys
 import json
 
 # Importo el resto de ficheros del programa
+from download import download
 from prepare import prepare
 from cleanup import cleanup
 from launch import launch 
@@ -23,12 +24,14 @@ init_logs()
 args = parse(argparse.ArgumentParser())
 
 # Validaciones de los argumentos de entrada al programa
-validate(sys.argv, args)
+validate(sys.argv, args, CONFIG_FILE)
 # Mensajes informativos
 args_warnings(sys.argv, args)
 
 # Ejecucción del script con los argumentos proporcionados
-if(args.orden == 'prepare'):
+if(args.orden == 'download'):
+    download()
+elif(args.orden == 'prepare'):
     prepare(CONFIG_FILE, args.num_serv)
 elif(args.orden == 'cleanup'):
     cleanup(CONFIG_FILE)

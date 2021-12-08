@@ -3,7 +3,7 @@
 import os
 
 # Importo el resto de ficheros del programa
-from logs import init_logs, log_error, log_info
+from logs import init_logs, log_error, log_info, log_warn
 
 # Configuración de los logs
 init_logs()
