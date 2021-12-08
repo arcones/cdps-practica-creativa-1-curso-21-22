@@ -14,12 +14,21 @@ init_logs()
 # Punto de entrada
 def prepare(CONFIG_FILE, num_serv):
     cleanup(CONFIG_FILE)
+    _check_requirements_are_downloaded()
     _save_config_file(CONFIG_FILE, num_serv)
     _create_mv_qcows(num_serv)
     _create_lb_qcow()
     _create_mv_xml(num_serv) # TODO Create also the client C1
     _create_lb_xml()
     _create_bridges()
+
+
+def _check_requirements_are_downloaded():
+    log_info("Comprobando que los ficheros necesarios para preparar el escenario están presentes...")
+    if os.path.isfile('./cdps-vm-base-pc1.qcow2') or os.path.isfile('./plantilla-vm-pc1.xml'):
+        log_error("Los ficheros necesarios para preparar el escenario no están presentes, ejecute la orden download para obtenerlos")
+        raise ValueError()
+    log_info("Los ficheros necesarios están presentes")
 
 
 def _clean_up_from_previous_runs():
