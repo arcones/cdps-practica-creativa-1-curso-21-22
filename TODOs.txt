@@ -4,3 +4,5 @@
 # TODO Check more TODOs directly in the code
 # TODO Create methods, etc in the script
 # TODO Leer bien el enunciado con todos los anexos y alinearlo!!! 
+# TODO crear carpeta para toda la broza
+# TODO paquetizar para distribuir, ejemplo en marcadores 
