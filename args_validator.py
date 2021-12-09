@@ -39,7 +39,7 @@ def _wrong_num_servs(args):
         return True
 
 def _missing_required_config_file(args, CONFIG_FILE):
-    if args.orden == 'launch' or args.orden == 'stop' or args.orden == 'release' and (not os.path.exists(f'./{CONFIG_FILE}')):
+    if (args.orden == 'launch' or args.orden == 'stop' or args.orden == 'release') and (not os.path.exists(f'./{CONFIG_FILE}')):
         log_error("Las órdenes launch, stop y release necesitan el fichero de configuración generado con la orden prepare. Ejecute primeramente el script con la orden prepare para generarlo")
         return True
 

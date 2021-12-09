@@ -25,7 +25,7 @@ def prepare(CONFIG_FILE, num_serv):
 
 def _check_requirements_are_downloaded():
     log_info("Comprobando que los ficheros necesarios para preparar el escenario están presentes...")
-    if os.path.isfile('./cdps-vm-base-pc1.qcow2') or os.path.isfile('./plantilla-vm-pc1.xml'):
+    if not os.path.isfile('./cdps-vm-base-pc1.qcow2') or not os.path.isfile('./plantilla-vm-pc1.xml'):
         log_error("Los ficheros necesarios para preparar el escenario no están presentes, ejecute la orden download para obtenerlos")
         raise ValueError()
     log_info("Los ficheros necesarios están presentes")
