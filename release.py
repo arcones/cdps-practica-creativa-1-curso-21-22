@@ -8,11 +8,28 @@ from logs import init_logs, log_error, log_warn, log_info
 init_logs()
 
 # Punto de entrada
-def cleanup(CONFIG_FILE):
+def release(CONFIG_FILE, num_serv):
+    _destroy_vms(num_serv)
+    _destroy_lb()
     _cleanup_qcows()
     _cleanup_xmls()
     _cleanup_config(CONFIG_FILE)
     _cleanup_bridges()
+
+
+def _destroy_vms(num_serv):
+    log_info(f"Destruyendo los {num_serv} servidores en forma de máquinas virtuales...")
+    i = 1
+    while i <= num_serv:
+        subprocess.call(["sudo", "virsh", "destroy", f"s{i}"])
+        i += 1
+    log_info(f"Destruidos los {num_serv} servidores en forma de máquinas virtuales")
+
+def _destroy_lb():
+    log_info("Destruyendo el balanceador de carga en forma de máquina virtual...")
+    subprocess.call(["sudo", "virsh", "destroy", "lb"], stderr=subprocess.DEVNULL)
+    log_info("Destruido el balanceador de carga en forma de máquina virtual")
+
 
 def _cleanup_qcows():
     log_info("Borrando ficheros qcows de ejecuciones anteriores (si existiesen)...")

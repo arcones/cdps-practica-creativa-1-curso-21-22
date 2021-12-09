@@ -11,11 +11,13 @@ init_logs()
 
 # Punto de entrada
 def launch(num_serv):
+    log_info("Procediendo con el arranque del escenario...")
     _launch_vm_manager()
     _launch_vms(num_serv)
     _launch_lb()
     _open_vms_console(num_serv)
     _open_lb_console()
+    log_info("El escenario ha sido arrancado")
 
 def _launch_vm_manager():
     log_info("Arrancando el gestor de máquinas virtuales...")
@@ -36,7 +38,7 @@ def _launch_lb():
     log_info("Arrancando el balanceador de carga en forma de máquina virtual...")
     subprocess.call(["sudo", "virsh", "define", "lb.xml"], stderr=subprocess.DEVNULL)
     subprocess.call(["sudo", "virsh", "start", f"lb"], stderr=subprocess.DEVNULL)
-    log_info("Arrancados los {num_serv} servidores en forma de máquinas virtuales")
+    log_info("Arrancado el balanceador de carga en forma de máquina virtual")
 
 def _open_vms_console(num_serv):
     log_info(f"Abriendo las {num_serv} consolas de los servidores...")

@@ -1,5 +1,5 @@
 # TODO Change log level by default
-# TODO Format all
+# TODO Format all, optimize imports
 # TODO Catch all possible exceptions 
 # TODO Check more TODOs directly in the code
 # TODO Create methods, etc in the script

@@ -8,7 +8,7 @@ import json
 # Importo el resto de ficheros del programa
 from download import download
 from prepare import prepare
-from cleanup import cleanup
+from release import release
 from launch import launch 
 from stop import stop
 from args_parser import parse
@@ -33,8 +33,8 @@ if(args.orden == 'download'):
     download()
 elif(args.orden == 'prepare'):
     prepare(CONFIG_FILE, args.num_serv)
-elif(args.orden == 'cleanup'):
-    cleanup(CONFIG_FILE)
+elif(args.orden == 'release'):
+    release(CONFIG_FILE, args.num_serv)
 elif(args.orden == 'launch' or args.orden == 'stop' or args.orden == 'release'):
     with open('auto-p2.json', 'r') as config_file_contents:
         num_serv = json.load(config_file_contents)['num_serv']

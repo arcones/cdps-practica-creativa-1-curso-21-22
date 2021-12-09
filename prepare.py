@@ -5,7 +5,7 @@ import os
 import json
 
 # Importo el resto de ficheros del programa
-from cleanup import cleanup
+from release import release
 from logs import init_logs, log_error, log_warn, log_info
 
 # Configuración de los logs
@@ -13,7 +13,10 @@ init_logs()
 
 # Punto de entrada
 def prepare(CONFIG_FILE, num_serv):
-    cleanup(CONFIG_FILE)
+    log_warn("Liberando el escenario de ejecuciones anteriores...")
+    release(CONFIG_FILE, num_serv)
+
+    log_info("El escenario ha sido liberado, procediendo con la preparación...")
     _check_requirements_are_downloaded()
     _save_config_file(CONFIG_FILE, num_serv)
     _create_mv_qcows(num_serv)
@@ -21,6 +24,7 @@ def prepare(CONFIG_FILE, num_serv):
     _create_mv_xml(num_serv) # TODO Create also the client C1
     _create_lb_xml()
     _create_bridges()
+    log_info("El escenario ha sido preparado")
 
 
 def _check_requirements_are_downloaded():
@@ -99,6 +103,7 @@ def _create_lb_xml():
 
     xml_content = xml_content.replace('<name>XXX</name>', f'<name>lb</name>')
     xml_content = xml_content.replace('/mnt/tmp/XXX/XXX.qcow2',f'{os.getcwd()}/lb.qcow2')
+
     interface_template = """
     <interface type='bridge'>
       <source bridge='XXX'/>

@@ -12,8 +12,10 @@ REPO_URL = "https://idefix.dit.upm.es/download/cdps/pc1"
 
 # Punto de entrada
 def download():
+    log_info("Procediendo con la descarga de los ficheros...")
     _download_xml()
     _download_qcow()
+    log_info("Los ficheros han sido descargados exitosamente")
 
 def _download_xml():
     log_info("Descargando fichero plantilla xml...")
