@@ -6,6 +6,7 @@ import json
 
 # Importo el resto de ficheros del programa
 from release import release
+from configure import configure
 from logs import init_logs, log_error, log_warn, log_info
 
 # Configuración de los logs
@@ -24,6 +25,8 @@ def prepare(CONFIG_FILE, num_serv):
     _create_mv_xml(num_serv) # TODO Create also the client C1
     _create_lb_xml()
     _create_bridges()
+
+    configure(num_serv)
     log_info("El escenario ha sido preparado")
 
 

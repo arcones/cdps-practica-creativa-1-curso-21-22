@@ -22,6 +22,8 @@ def launch(num_serv):
     time.sleep(60)
     log_info("El escenario ha sido arrancado")
 
+## TODO por aqui da un warning del virt-viewer
+
 def _launch_vm_manager():
     log_info("Arrancando el gestor de máquinas virtuales...")
     #os.environ["HOME"] = "/mnt/tmp" check what we do with this

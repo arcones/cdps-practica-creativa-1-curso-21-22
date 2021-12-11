@@ -7,3 +7,4 @@
 # TODO crear carpeta para toda la broza
 # TODO paquetizar para distribuir, ejemplo en marcadores 
 # TODO borrar la clave
+# TODO quitar los permisos de ejecucción del configure
