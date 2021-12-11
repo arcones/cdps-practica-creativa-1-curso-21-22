@@ -18,7 +18,7 @@ def launch(num_serv):
     _launch_lb()
     _open_vms_console(num_serv)
     _open_lb_console()
-    log_info("Esperando a que las máquinas virtuales acaben de arrancar...")
+    log_info("Esperando a que las máquinas virtuales acaben de arrancar...") # TODO después de esto da unos warnings de virsh
     time.sleep(60)
     log_info("El escenario ha sido arrancado")
 

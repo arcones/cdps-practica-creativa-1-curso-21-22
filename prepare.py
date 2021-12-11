@@ -24,7 +24,7 @@ def prepare(CONFIG_FILE, num_serv):
     _create_lb_qcow()
     _create_mv_xml(num_serv) # TODO Create also the client C1
     _create_lb_xml()
-    _create_bridges()
+    _create_bridges() #TODO this can be moved to configure py
 
     configure(num_serv)
     log_info("El escenario ha sido preparado")
