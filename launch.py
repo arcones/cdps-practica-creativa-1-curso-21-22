@@ -2,6 +2,7 @@
 
 import subprocess
 import os
+import time
 
 # Importo el resto de ficheros del programa
 from logs import init_logs, log_error, log_warn, log_info
@@ -17,6 +18,8 @@ def launch(num_serv):
     _launch_lb()
     _open_vms_console(num_serv)
     _open_lb_console()
+    log_info("Esperando a que las máquinas virtuales acaben de arrancar...")
+    time.sleep(60)
     log_info("El escenario ha sido arrancado")
 
 def _launch_vm_manager():
