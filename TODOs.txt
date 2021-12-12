@@ -1,9 +1,7 @@
-# TODO Catch all possible exceptions 
 # TODO Check more TODOs directly in the code
-# TODO Create methods, etc in the script
 # TODO Leer bien el enunciado con todos los anexos y alinearlo!!! 
-# TODO crear carpeta para toda la broza
-# TODO paquetizar para distribuir, ejemplo en marcadores 
 # TODO borrar la clave
-# TODO quitar los permisos de ejecucción del configure
-# TODO hay logs q no se ven!!!
+# TODO actualizar README
+# TODO actualizar --help 
+# TODO partes que faltan del enunciado creativo
+# TODO partes que faltan del enunciado 2
