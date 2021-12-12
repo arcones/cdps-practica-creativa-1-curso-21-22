@@ -5,6 +5,7 @@ def get_scenario_machines_list(num_serv):
     servers_and_lb.append("lb")
     return servers_and_lb
 
+
 def unfurl(num_serv):
     servers = []
     i = 1

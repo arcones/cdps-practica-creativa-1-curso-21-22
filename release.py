@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import subprocess
+
 # Importo el resto de ficheros del programa
 from logs import init_logs
 
 LOGGER = init_logs()
+
 
 # Punto de entrada
 def release(CONFIG_FILE, num_serv):
@@ -25,6 +27,7 @@ def _destroy_vms(num_serv):
         i += 1
     LOGGER.info(f"Destruidos los {num_serv} servidores en forma de máquinas virtuales")
 
+
 def _destroy_lb():
     LOGGER.info("Destruyendo el balanceador de carga en forma de máquina virtual...")
     subprocess.call(["sudo", "virsh", "destroy", "lb"])
@@ -41,7 +44,8 @@ def _cleanup_qcows():
     subprocess.call(["rm", "-rf", f"lb.qcow2"], stderr=subprocess.DEVNULL)
     LOGGER.info("Borrados los ficheros qcows de ejecuciones anteriores")
 
-def _cleanup_xmls():#TODO split in methods, lb and servers? same for above method
+
+def _cleanup_xmls():  # TODO split in methods, lb and servers? same for above method
     LOGGER.info("Borrando ficheros xmls de ejecuciones anteriores (si existiesen)...")
     i = 1
     while i <= 5:
@@ -50,10 +54,12 @@ def _cleanup_xmls():#TODO split in methods, lb and servers? same for above metho
     subprocess.call(["rm", "-rf", f"lb.xml"], stderr=subprocess.DEVNULL)
     LOGGER.info("Borrados los ficheros xmls de ejecuciones anteriores")
 
+
 def _cleanup_config(CONFIG_FILE):
     LOGGER.info("Borrando fichero json de configuración de ejecuciones anteriores (si existiese)...")
     subprocess.call(["rm", CONFIG_FILE], stderr=subprocess.DEVNULL)
     LOGGER.info("Borrado fichero json de configuración de ejecuciones anteriores")
+
 
 def _cleanup_bridges():
     LOGGER.info("Borrando bridges de ejecuciones anteriores (si existiese)...")

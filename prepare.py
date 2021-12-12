@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 
-import subprocess
-import os
 import json
+import os
+import subprocess
 
-# Importo el resto de ficheros del programa
-from release import release
 from configure import configure
 from logs import init_logs
+# Importo el resto de ficheros del programa
+from release import release
 
 LOGGER = init_logs()
+
 
 # Punto de entrada
 def prepare(CONFIG_FILE, num_serv):
@@ -21,9 +22,9 @@ def prepare(CONFIG_FILE, num_serv):
     _save_config_file(CONFIG_FILE, num_serv)
     _create_mv_qcows(num_serv)
     _create_lb_qcow()
-    _create_mv_xml(num_serv) # TODO Create also the client C1
+    _create_mv_xml(num_serv)  # TODO Create also the client C1
     _create_lb_xml()
-    _create_bridges() #TODO this can be moved to configure py
+    _create_bridges()  # TODO this can be moved to configure py
 
     configure(num_serv)
     LOGGER.info("El escenario ha sido preparado")
@@ -32,7 +33,8 @@ def prepare(CONFIG_FILE, num_serv):
 def _check_requirements_are_downloaded():
     LOGGER.info("Comprobando que los ficheros necesarios para preparar el escenario están presentes...")
     if not os.path.isfile('./cdps-vm-base-pc1.qcow2') or not os.path.isfile('./plantilla-vm-pc1.xml'):
-        LOGGER.error("Los ficheros necesarios para preparar el escenario no están presentes, ejecute la orden download para obtenerlos")
+        LOGGER.error(
+            "Los ficheros necesarios para preparar el escenario no están presentes, ejecute la orden download para obtenerlos")
         raise ValueError()
     LOGGER.info("Los ficheros necesarios están presentes")
 
@@ -46,6 +48,7 @@ def _clean_up_from_previous_runs():
             subprocess.call(["rm", f"s{i}.xml"], stdout=devnull)
         i += 1
     LOGGER.info("Borrandos los ficheros de configuración de ejecuciones anteriores")
+
 
 def _save_config_file(CONFIG_FILE, num_serv):
     LOGGER.info(f"Corriendo la orden prepare con num_serv={num_serv}")
@@ -62,7 +65,7 @@ def _create_mv_qcows(num_serv):
     while i <= num_serv:
         LOGGER.info(f"Creando el fichero qcow2 de la máquina {i}...")
         subprocess.call(["qemu-img", "create", "-f", "qcow2",
-                        "-b", "cdps-vm-base-pc1.qcow2", f"s{i}.qcow2"], stdout=subprocess.DEVNULL)
+                         "-b", "cdps-vm-base-pc1.qcow2", f"s{i}.qcow2"], stdout=subprocess.DEVNULL)
         LOGGER.info(f"Creado el fichero qcow2 de la máquina {i}")
         i += 1
 
@@ -80,9 +83,9 @@ def _create_mv_xml(num_serv):
             xml_content = xml.read()
 
         xml_content = xml_content.replace('<name>XXX</name>', f'<name>s{i}</name>')
-        xml_content = xml_content.replace('/mnt/tmp/XXX/XXX.qcow2',f'{os.getcwd()}/s{i}.qcow2')
+        xml_content = xml_content.replace('/mnt/tmp/XXX/XXX.qcow2', f'{os.getcwd()}/s{i}.qcow2')
         xml_content = xml_content.replace("bridge='XXX'", f"bridge='LAN2'")
-        
+
         with open(f"s{i}.xml", 'w') as xml:
             xml.write(xml_content)
 
@@ -91,10 +94,13 @@ def _create_mv_xml(num_serv):
 
     LOGGER.info("Los ficheros xml de configuración requeridos para los servidores han sido creados")
 
+
 def _create_lb_qcow():
     LOGGER.info("Creando el fichero qcow2 requerido para el balanceador de carga...")
-    subprocess.call(["qemu-img", "create", "-f", "qcow2", "-b", "cdps-vm-base-pc1.qcow2", f"lb.qcow2"], stdout=subprocess.DEVNULL)
+    subprocess.call(["qemu-img", "create", "-f", "qcow2", "-b", "cdps-vm-base-pc1.qcow2", f"lb.qcow2"],
+                    stdout=subprocess.DEVNULL)
     LOGGER.info("El fichero qcow2 requerido para el balanceador de carga ha sido creado")
+
 
 def _create_lb_xml():
     LOGGER.info("Creando el fichero de configuración del balanceador de carga...")
@@ -104,7 +110,7 @@ def _create_lb_xml():
         xml_content = xml.read()
 
     xml_content = xml_content.replace('<name>XXX</name>', f'<name>lb</name>')
-    xml_content = xml_content.replace('/mnt/tmp/XXX/XXX.qcow2',f'{os.getcwd()}/lb.qcow2')
+    xml_content = xml_content.replace('/mnt/tmp/XXX/XXX.qcow2', f'{os.getcwd()}/lb.qcow2')
 
     interface_template = """
     <interface type='bridge'>
@@ -125,12 +131,12 @@ def _create_lb_xml():
     """
 
     xml_content = xml_content.replace(interface_template, interfaces_required)
-    
+
     with open(f"lb.xml", 'w') as xml:
         xml.write(xml_content)
 
-
     LOGGER.info("El fichero xml de configuración requerido para el balanceador de carga ha sido creado")
+
 
 def _create_bridges():
     LOGGER.info(f"Creando los bridges correspondientes a las dos redes virtuales...")

@@ -9,6 +9,7 @@ LOGGER = init_logs()
 
 REPO_URL = "https://idefix.dit.upm.es/download/cdps/pc1"
 
+
 # Punto de entrada
 def download():
     LOGGER.info("Procediendo con la descarga de los ficheros...")
@@ -16,10 +17,12 @@ def download():
     _download_qcow()
     LOGGER.info("Los ficheros han sido descargados exitosamente")
 
+
 def _download_xml():
     LOGGER.info("Descargando fichero plantilla xml...")
     subprocess.call(["wget", "-nc", f"{REPO_URL}/plantilla-vm-pc1.xml", "--no-check-certificate"])
     LOGGER.info("Descargado fichero plantilla xml")
+
 
 def _download_qcow():
     LOGGER.info("Descargando fichero base qcow...")

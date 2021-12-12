@@ -11,9 +11,10 @@ rtan las LAN del escenario.
 
 HELP_NUM_SERV = "Con la orden prepare, el número de servidores web a arrancar (de 1 a 5), si este parámetro no se pasa, será 3. El número de servidores se guardará para las siguientes órdenes"
 
+
 # Punto de entrada
 def parse(parser):
-    parser.add_argument('orden', help=HELP_ORDER, nargs='?', choices=('prepare', 'launch', 'stop', 'release', 'download'))
+    parser.add_argument('orden', help=HELP_ORDER, nargs='?',
+                        choices=('prepare', 'launch', 'stop', 'release', 'download'))
     parser.add_argument("-n", "--num_serv", help=HELP_NUM_SERV, default=3, required=False, type=int)
     return parser.parse_args()
-
