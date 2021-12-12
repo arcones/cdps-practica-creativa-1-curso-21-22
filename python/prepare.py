@@ -5,78 +5,67 @@ import os
 import subprocess
 
 from configure import configure
-from logs import init_logs
-# Importo el resto de ficheros del programa
 from release import release
-
-LOGGER = init_logs()
-
 
 # Punto de entrada
 def prepare(CONFIG_FILE, num_serv):
-    LOGGER.warning("Liberando el escenario de ejecuciones anteriores...")
-    release(CONFIG_FILE, num_serv)
-
-    LOGGER.info("El escenario ha sido liberado, procediendo con la preparación...")
     _check_requirements_are_downloaded()
     _save_config_file(CONFIG_FILE, num_serv)
     _create_mv_qcows(num_serv)
     _create_lb_qcow()
     _create_mv_xml(num_serv)  # TODO Create also the client C1
     _create_lb_xml()
-    _create_bridges()  # TODO this can be moved to configure py
+    _create_bridges()
 
     configure(num_serv)
-    LOGGER.info("El escenario ha sido preparado")
+    print('\033[92m' + "El escenario ha sido preparado" + '\033[0m')
 
 
 def _check_requirements_are_downloaded():
-    LOGGER.info("Comprobando que los ficheros necesarios para preparar el escenario están presentes...")
+    print('\033[92m' + "Comprobando que los ficheros necesarios para preparar el escenario están presentes..." + '\033[0m')
     if not os.path.isfile('./cdps-vm-base-pc1.qcow2') or not os.path.isfile('./plantilla-vm-pc1.xml'):
-        LOGGER.error(
-            "Los ficheros necesarios para preparar el escenario no están presentes, ejecute la orden download para obtenerlos")
+        print('\033[91m' + "Los ficheros necesarios para preparar el escenario no están presentes, ejecute la orden download para obtenerlos" + '\033[0m')
         raise ValueError()
-    LOGGER.info("Los ficheros necesarios están presentes")
+    print('\033[92m' + "Los ficheros necesarios están presentes" + '\033[0m')
 
 
 def _clean_up_from_previous_runs():
-    LOGGER.info("Borrando ficheros de configuración de ejecuciones anteriores...")
+    print('\033[92m' + "Borrando ficheros de configuración de ejecuciones anteriores..." + '\033[0m')
     i = 1
     while i <= 5:
         with open(os.devnull, 'w') as devnull:
-            subprocess.call(["rm", f"s{i}.qcow2"], stdout=devnull)
-            subprocess.call(["rm", f"s{i}.xml"], stdout=devnull)
+            subprocess.call(["rm", f"s{i}.qcow2"])
+            subprocess.call(["rm", f"s{i}.xml"])
         i += 1
-    LOGGER.info("Borrandos los ficheros de configuración de ejecuciones anteriores")
+    print('\033[92m' + "Borrandos los ficheros de configuración de ejecuciones anteriores" + '\033[0m')
 
 
 def _save_config_file(CONFIG_FILE, num_serv):
-    LOGGER.info(f"Corriendo la orden prepare con num_serv={num_serv}")
+    print('\033[92m' + f"Corriendo la orden prepare con num_serv={num_serv}" + '\033[0m')
     auto_p2_json = open(CONFIG_FILE, "w")
     num_serv_as_json = json.dumps({"num_serv": num_serv}, indent=4)
     auto_p2_json.write(num_serv_as_json)
     auto_p2_json.close()
-    LOGGER.info("El fichero json de configuración ha sido almacenado")
+    print('\033[92m' + "El fichero json de configuración ha sido almacenado" + '\033[0m')
 
 
 def _create_mv_qcows(num_serv):
-    LOGGER.info("Creando los ficheros qcow2 requeridos para los servidores...")
+    print('\033[92m' + "Creando los ficheros qcow2 requeridos para los servidores..." + '\033[0m')
     i = 1
     while i <= num_serv:
-        LOGGER.info(f"Creando el fichero qcow2 de la máquina {i}...")
-        subprocess.call(["qemu-img", "create", "-f", "qcow2",
-                         "-b", "cdps-vm-base-pc1.qcow2", f"s{i}.qcow2"], stdout=subprocess.DEVNULL)
-        LOGGER.info(f"Creado el fichero qcow2 de la máquina {i}")
+        print('\033[92m' + f"Creando el fichero qcow2 de la máquina {i}..." + '\033[0m')
+        subprocess.call(["qemu-img", "create", "-f", "qcow2", "-b", "cdps-vm-base-pc1.qcow2", f"s{i}.qcow2"])
+        print('\033[92m' + f"Creado el fichero qcow2 de la máquina {i}" + '\033[0m')
         i += 1
 
-    LOGGER.info("Los ficheros qcow2 requeridos para los servidores han sido creados")
+    print('\033[92m' + "Los ficheros qcow2 requeridos para los servidores han sido creados" + '\033[0m')
 
 
 def _create_mv_xml(num_serv):
-    LOGGER.info("Creando los ficheros xml de configuración requeridos para los servidores...")
+    print('\033[92m' + "Creando los ficheros xml de configuración requeridos para los servidores..." + '\033[0m')
     i = 1
     while i <= num_serv:
-        LOGGER.info(f"Creando el fichero xml de configuración de la máquina {i}...")
+        print('\033[92m' + f"Creando el fichero xml de configuración de la máquina {i}..." + '\033[0m')
         subprocess.call(["cp", "plantilla-vm-pc1.xml", f"s{i}.xml"])
 
         with open(f"s{i}.xml", "r") as xml:
@@ -89,21 +78,20 @@ def _create_mv_xml(num_serv):
         with open(f"s{i}.xml", 'w') as xml:
             xml.write(xml_content)
 
-        LOGGER.info(f"Creado el fichero xml de configuración de la máquina {i}")
+        print('\033[92m' + f"Creado el fichero xml de configuración de la máquina {i}" + '\033[0m')
         i += 1
 
-    LOGGER.info("Los ficheros xml de configuración requeridos para los servidores han sido creados")
+    print('\033[92m' + "Los ficheros xml de configuración requeridos para los servidores han sido creados" + '\033[0m')
 
 
 def _create_lb_qcow():
-    LOGGER.info("Creando el fichero qcow2 requerido para el balanceador de carga...")
-    subprocess.call(["qemu-img", "create", "-f", "qcow2", "-b", "cdps-vm-base-pc1.qcow2", f"lb.qcow2"],
-                    stdout=subprocess.DEVNULL)
-    LOGGER.info("El fichero qcow2 requerido para el balanceador de carga ha sido creado")
+    print('\033[92m' + "Creando el fichero qcow2 requerido para el balanceador de carga..." + '\033[0m')
+    subprocess.call(["qemu-img", "create", "-f", "qcow2", "-b", "cdps-vm-base-pc1.qcow2", "lb.qcow2"])
+    print('\033[92m' + "El fichero qcow2 requerido para el balanceador de carga ha sido creado" + '\033[0m')
 
 
 def _create_lb_xml():
-    LOGGER.info("Creando el fichero de configuración del balanceador de carga...")
+    print('\033[92m' + "Creando el fichero de configuración del balanceador de carga..." + '\033[0m')
     subprocess.call(["cp", "plantilla-vm-pc1.xml", f"lb.xml"])
 
     with open(f"lb.xml", "r") as xml:
@@ -135,13 +123,13 @@ def _create_lb_xml():
     with open(f"lb.xml", 'w') as xml:
         xml.write(xml_content)
 
-    LOGGER.info("El fichero xml de configuración requerido para el balanceador de carga ha sido creado")
+    print('\033[92m' + "El fichero xml de configuración requerido para el balanceador de carga ha sido creado" + '\033[0m')
 
 
 def _create_bridges():
-    LOGGER.info(f"Creando los bridges correspondientes a las dos redes virtuales...")
+    print('\033[92m' + f"Creando los bridges correspondientes a las dos redes virtuales..." + '\033[0m')
     subprocess.call(["sudo", "brctl", "addbr", "LAN1"])
     subprocess.call(["sudo", "brctl", "addbr", "LAN2"])
     subprocess.call(["sudo", "ifconfig", "LAN1", "up"])
     subprocess.call(["sudo", "ifconfig", "LAN2", "up"])
-    LOGGER.info(f"Creados los bridges correspondientes a las dos redes virtuales")
+    print('\033[92m' + f"Creados los bridges correspondientes a las dos redes virtuales" + '\033[0m')

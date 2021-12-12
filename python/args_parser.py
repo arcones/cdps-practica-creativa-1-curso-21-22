@@ -2,6 +2,7 @@
 
 HELP_ORDER = """
 La orden a ejecutar.
+"download": Para bajarse los ficheros base .qcow2 y .xml
 "prepare": Para crear los ficheros .qcow2 de diferencias y los de especificación en XML de cada MV, así como los bridges virtuales que sopo
 rtan las LAN del escenario.
 "launch": Para arrancar las máquinas virtuales y mostrar su consola.
@@ -14,7 +15,6 @@ HELP_NUM_SERV = "Con la orden prepare, el número de servidores web a arrancar (
 
 # Punto de entrada
 def parse(parser):
-    parser.add_argument('orden', help=HELP_ORDER, nargs='?',
-                        choices=('prepare', 'launch', 'stop', 'release', 'download'))
+    parser.add_argument('orden', help=HELP_ORDER, nargs='?', choices=('prepare', 'launch', 'stop', 'release', 'download'))
     parser.add_argument("-n", "--num_serv", help=HELP_NUM_SERV, default=3, required=False, type=int)
     return parser.parse_args()
