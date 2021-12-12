@@ -6,8 +6,8 @@ import os
 def validate(argv, args, CONFIG_FILE):
     if (_args_count_wrong(argv) 
         or _order_not_present(args) 
-        or _wrong_order_with_num_servs(argv, args) 
-        or _wrong_num_servs(args) 
+        or _wrong_order_with_domain(args)
+        or _wrong_num_servs(args)
         or _missing_required_config_file(args, CONFIG_FILE)):
         print('\033[91m' + "Los parámetros introducidos al script son incorrectos, ejecutelo con --help para encontrar más información" + '\033[0m')
         raise ValueError()
@@ -29,12 +29,10 @@ def _order_not_present(args):
         print('\033[91m' + "Se debe especificar la orden a realizar. Vuelva a ejecutar el script con una de las órdenes proporcionadas" + '\033[0m')
         return True
 
-
-def _wrong_order_with_num_servs(argv, args):
-    if args.orden != 'prepare' and len(argv) > 2:
-        print('\033[91m' + "El número de servidores sólo se debe especificar con la orden prepare" + '\033[0m')
+def _wrong_order_with_domain(args):
+    if args.orden != 'monitor' and args.domain:
+        print('\033[91m' + "El domain sólo se debe especificar con la orden monitor" + '\033[0m')
         return True
-
 
 def _wrong_num_servs(args):
     if args.orden == 'prepare' and (args.num_serv < 1 or args.num_serv > 5):
