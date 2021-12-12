@@ -13,12 +13,11 @@ from launch import launch
 from stop import stop
 from args_parser import parse
 from args_validator import validate, args_warnings
-from logs import init_logs, log_info, log_error, log_warn 
+from logs import init_logs
 
 CONFIG_FILE = "auto-p2.json"
 
-# Configuración de los logs
-init_logs()
+LOGGER = init_logs()
 
 # Captura de argumentos de entrada al programa
 args = parse(argparse.ArgumentParser())
@@ -38,10 +37,10 @@ elif(args.orden == 'release'):
 elif(args.orden == 'launch' or args.orden == 'stop' or args.orden == 'release'):
     with open('auto-p2.json', 'r') as config_file_contents:
         num_serv = json.load(config_file_contents)['num_serv']
-    log_info(f"Corriendo la orden {args.orden} con num_serv={args.num_serv}")
+    LOGGER.info(f"Corriendo la orden {args.orden} con num_serv={args.num_serv}")
     if(args.orden == 'launch'):
         launch(num_serv)
     elif(args.orden == 'stop'):
         stop(num_serv)
 else:
-    log_error("Hay un problema con el código del programa. Contacte con el equipo de desarrollo")
+    LOGGER.error("Hay un problema con el código del programa. Contacte con el equipo de desarrollo")

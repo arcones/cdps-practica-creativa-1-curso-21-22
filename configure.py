@@ -4,16 +4,15 @@ import subprocess
 from util import get_scenario_machines_list
 
 # Importo el resto de ficheros del programa
-from logs import init_logs, log_error, log_warn, log_info
+from logs import init_logs
 
-# Configuración de los logs
-init_logs()
+LOGGER = init_logs()
 
 TMP_DIR = "tmp_files"
 
 # Punto de entrada
 def configure(num_serv):
-    log_info("Configurando las máquinas virtuales...")
+    LOGGER.info("Configurando las máquinas virtuales...")
 
     servers_and_lb = get_scenario_machines_list(num_serv)
 
@@ -22,7 +21,7 @@ def configure(num_serv):
     _update_server_network_interfaces(num_serv)
     _update_lb_network_interface()
 
-    log_info("El escenario ha sido configurado")
+    LOGGER.info("El escenario ha sido configurado")
     
 
 def _update_hostname(domain_list):
@@ -48,13 +47,11 @@ def _update_server_network_interfaces(num_serv):
     i = 1
     while i <= num_serv:
         with open(f"{TMP_DIR}/interfaces", 'w') as interfaces:
-            interfaces.write(f"""
-            auto eth1
-            iface eth1 inet static
-                address 10.10.2.1{i}
-                netmask 255.255.255.0
-                up route add default via 10.10.2.1 dev eth1
-            """)
+            interfaces.write("auto eth0\n")
+            interfaces.write("iface eth0 inet static\n")
+            interfaces.write(f"\taddress 10.10.2.1{i}\n")
+            interfaces.write("\tnetmask 255.255.255.0\n")
+            interfaces.write("\tup route add default via 10.10.2.1 dev eth0\n")
         subprocess.call(["sudo", "virt-copy-in", "-a", f"s{i}.qcow2", f"{TMP_DIR}/interfaces", "/etc/network/"])
         subprocess.call(["sudo", "virt-cat", "-a", f"s{i}.qcow2", "/etc/network/interfaces"]) # TODO remove
         i += 1
@@ -63,17 +60,14 @@ def _update_server_network_interfaces(num_serv):
 def _update_lb_network_interface():
     subprocess.call(["mkdir", "-p", TMP_DIR])
     with open(f"{TMP_DIR}/interfaces", 'w') as interfaces:
-        interfaces.write(f"""
-        auto eth0
-        iface eth0 inet static
-            address 10.10.1.1
-            netmask 255.255.255.0
-            
-        auto eth1
-        iface eth0 inet static
-            address 10.10.2.1
-            netmask 255.255.255.0
-        """)
+        interfaces.write("auto eth0\n")
+        interfaces.write("iface eth0 inet static\n")
+        interfaces.write("\taddress 10.10.1.1\n")
+        interfaces.write("\tnetmask 255.255.255.0\n\n")
+        interfaces.write("auto eth1\n")
+        interfaces.write("iface eth0 inet static\n")
+        interfaces.write("\taddress 10.10.2.1\n")
+        interfaces.write("\tnetmask 255.255.255.0\n")
     subprocess.call(["sudo", "virt-copy-in", "-a", f"lb.qcow2", f"{TMP_DIR}/interfaces", "/etc/network/"])
     subprocess.call(["sudo", "virt-cat", "-a", f"lb.qcow2", "/etc/network/interfaces"]) # TODO remove
 
