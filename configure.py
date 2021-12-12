@@ -21,6 +21,7 @@ def configure(num_serv):
     _update_server_network_interfaces(num_serv)
     _update_lb_network_interface()
     _update_host_configuration()
+    _update_indexes(num_serv)
 
     LOGGER.info("El escenario ha sido configurado")
     
@@ -31,7 +32,6 @@ def _update_hostname(domain_list):
         with open(f"{TMP_DIR}/hostname", 'w') as hostname:
             hostname.write(f"{domain}\n")
         subprocess.call(["sudo", "virt-copy-in", "-a", f"{domain}.qcow2", f"{TMP_DIR}/hostname", "/etc"])
-        subprocess.call(["sudo", "virt-cat", "-a", f"{domain}.qcow2", "/etc/hostname"]) # TODO remove
     subprocess.call(["rm", "-rf", TMP_DIR])
 
 def _update_hosts(domain_list):
@@ -41,7 +41,6 @@ def _update_hosts(domain_list):
             hosts.write(f"127.0.1.1  {domain}\n")
         subprocess.call(["sudo", "virt-copy-in", "-a", f"{domain}.qcow2", f"{TMP_DIR}/hosts", "/etc"])
         subprocess.call(["sudo", "virt-cat", "-a", f"{domain}.qcow2", "/etc/hosts"]) # TODO remove
-    subprocess.call(["rm", "-rf", TMP_DIR])
 
 def _update_server_network_interfaces(num_serv):
     subprocess.call(["mkdir", "-p", TMP_DIR])
@@ -55,7 +54,6 @@ def _update_server_network_interfaces(num_serv):
             interfaces.write("\tgateway 10.10.2.1\n")
             interfaces.write("\tup route add default via 10.10.2.1 dev eth0\n")
         subprocess.call(["sudo", "virt-copy-in", "-a", f"s{i}.qcow2", f"{TMP_DIR}/interfaces", "/etc/network/"])
-        subprocess.call(["sudo", "virt-cat", "-a", f"s{i}.qcow2", "/etc/network/interfaces"]) # TODO remove
         i += 1
     subprocess.call(["rm", "-rf", TMP_DIR])
 
@@ -71,12 +69,10 @@ def _update_lb_network_interface():
         interfaces.write("\taddress 10.10.2.1\n")
         interfaces.write("\tnetmask 255.255.255.0\n")
     subprocess.call(["sudo", "virt-copy-in", "-a", f"lb.qcow2", f"{TMP_DIR}/interfaces", "/etc/network/"])
-    subprocess.call(["sudo", "virt-cat", "-a", f"lb.qcow2", "/etc/network/interfaces"]) # TODO remove
 
     with open(f"{TMP_DIR}/sysctl.conf", 'w') as sysctl:
         sysctl.write("net.ipv4.ip_forward=1\n")
     subprocess.call(["sudo", "virt-copy-in", "-a", f"lb.qcow2", f"{TMP_DIR}/sysctl.conf", "/etc"])
-    subprocess.call(["sudo", "virt-cat", "-a", f"lb.qcow2", "/etc/sysctl.conf"]) # TODO remove
 
     subprocess.call(["rm", "-rf", TMP_DIR])
 
@@ -94,3 +90,13 @@ def _update_host_configuration():
     #    interfaces.write("\tup route add 10.10.0.0/16 via 10.10.1.1 dev LAN1\n")
     #subprocess.call(["sudo", "mv", f"{TMP_DIR}/interfaces", "/etc/network/"])
     #subprocess.call(["rm", "-rf", TMP_DIR])
+
+def _update_indexes(num_serv):
+    subprocess.call(["mkdir", "-p", TMP_DIR])
+    i = 1
+    while i <= num_serv:
+        with open(f"{TMP_DIR}/index.html", 'w') as interfaces:
+            interfaces.write(f"S{i}\n")
+        subprocess.call(["sudo", "virt-copy-in", "-a", f"s{i}.qcow2", f"{TMP_DIR}/index.html", "/var/www/html/"])
+        i += 1
+    subprocess.call(["rm", "-rf", TMP_DIR])
