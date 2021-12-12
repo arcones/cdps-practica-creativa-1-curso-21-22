@@ -8,3 +8,4 @@
 # TODO paquetizar para distribuir, ejemplo en marcadores 
 # TODO borrar la clave
 # TODO quitar los permisos de ejecucción del configure
+# TODO hay logs q no se ven!!!
