@@ -5,15 +5,15 @@ import argparse
 import json
 import sys
 
-from args_parser import parse
-from args_validator import validate, args_warnings
+from python.args_parser import parse
+from python.args_validator import validate, args_warnings
 # Importo el resto de ficheros del programa
-from download import download
-from launch import launch
-from logs import init_logs
-from prepare import prepare
-from release import release
-from stop import stop
+from python.download import download
+from python.launch import launch
+from python.logs import init_logs
+from python.prepare import prepare
+from python.release import release
+from python.stop import stop
 
 CONFIG_FILE = "auto-p2.json"
 
