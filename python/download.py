@@ -5,7 +5,7 @@ import subprocess
 REPO_URL = "https://idefix.dit.upm.es/download/cdps/pc1"
 
 
-# Punto de entrada
+
 def download():
     print('\033[92m' + "Procediendo con la descarga de los ficheros..." + '\033[0m')
     _download_xml()

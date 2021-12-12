@@ -17,16 +17,16 @@ def _destroy_vms(num_serv):
     print("\033[92m" + f"Destruyendo los {num_serv} servidores en forma de máquinas virtuales..." + "\033[0m")
     i = 1
     while i <= num_serv:
-        subprocess.call(["sudo", "virsh", "destroy", f"s{i}"])
-        subprocess.call(["sudo", "virsh", "undefine", f"s{i}"])
+        subprocess.call(["sudo", "virsh", "destroy", f"s{i}"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.call(["sudo", "virsh", "undefine", f"s{i}"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         i += 1
     print("\033[92m" + f"Destruidos los {num_serv} servidores en forma de máquinas virtuales" + "\033[0m")
 
 
 def _destroy_lb():
     print("\033[92m" + "Destruyendo el balanceador de carga en forma de máquina virtual..." + "\033[0m")
-    subprocess.call(["sudo", "virsh", "destroy", "lb"])
-    subprocess.call(["sudo", "virsh", "undefine", "lb"])
+    subprocess.call(["sudo", "virsh", "destroy", "lb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.call(["sudo", "virsh", "undefine", "lb"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     print("\033[92m" + "Destruido el balanceador de carga en forma de máquina virtual" + "\033[0m")
 
 

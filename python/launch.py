@@ -3,7 +3,7 @@
 import subprocess
 import time
 
-# Punto de entrada
+
 def launch(num_serv):
     print('\033[92m' + "Procediendo con el arranque del escenario..." + '\033[0m')
     _launch_vm_manager()
@@ -12,7 +12,7 @@ def launch(num_serv):
     _open_vms_console(num_serv)
     _open_lb_console()
     print('\033[92m' + "Esperando a que las máquinas virtuales acaben de arrancar..." + '\033[0m')
-    time.sleep(20)
+    time.sleep(30)
     print('\033[92m' + "El escenario ha sido arrancado" + '\033[0m')
 
 def _launch_vm_manager():

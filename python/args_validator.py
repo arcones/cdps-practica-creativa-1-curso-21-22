@@ -2,7 +2,7 @@
 
 import os
 
-# Punto de entrada
+
 def validate(argv, args, CONFIG_FILE):
     if (_args_count_wrong(argv) 
         or _order_not_present(args) 

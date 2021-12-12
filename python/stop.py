@@ -3,7 +3,7 @@
 import subprocess
 import time
 
-# Punto de entrada
+
 def stop(num_serv):
     print('\033[92m' + "Procediendo con la parada del escenario..." + '\033[0m')
     _stop_servers(num_serv)

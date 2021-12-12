@@ -7,13 +7,13 @@ import subprocess
 from configure import configure
 from release import release
 
-# Punto de entrada
+
 def prepare(CONFIG_FILE, num_serv):
     _check_requirements_are_downloaded()
     _save_config_file(CONFIG_FILE, num_serv)
     _create_mv_qcows(num_serv)
     _create_lb_qcow()
-    _create_mv_xml(num_serv)  # TODO Create also the client C1
+    _create_mv_xml(num_serv)
     _create_lb_xml()
     _create_bridges()
 
