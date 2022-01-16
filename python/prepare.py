@@ -12,10 +12,8 @@ def prepare(CONFIG_FILE, num_serv):
     _check_requirements_are_downloaded()
     _save_config_file(CONFIG_FILE, num_serv)
     _create_mv_qcows(num_serv)
-    _create_lb_qcow()
     _create_mv_xml(num_serv)
-    _create_lb_xml()
-    _create_bridges()
+    #_create_bridges()
 
     configure(num_serv)
     print('\033[92m' + "El escenario ha sido preparado" + '\033[0m')
@@ -82,48 +80,6 @@ def _create_mv_xml(num_serv):
         i += 1
 
     print('\033[92m' + "Los ficheros xml de configuración requeridos para los servidores han sido creados" + '\033[0m')
-
-
-def _create_lb_qcow():
-    print('\033[92m' + "Creando el fichero qcow2 requerido para el balanceador de carga..." + '\033[0m')
-    subprocess.call(["qemu-img", "create", "-f", "qcow2", "-b", "cdps-vm-base-pc1.qcow2", "lb.qcow2"])
-    print('\033[92m' + "El fichero qcow2 requerido para el balanceador de carga ha sido creado" + '\033[0m')
-
-
-def _create_lb_xml():
-    print('\033[92m' + "Creando el fichero de configuración del balanceador de carga..." + '\033[0m')
-    subprocess.call(["cp", "plantilla-vm-pc1.xml", f"lb.xml"])
-
-    with open(f"lb.xml", "r") as xml:
-        xml_content = xml.read()
-
-    xml_content = xml_content.replace('<name>XXX</name>', f'<name>lb</name>')
-    xml_content = xml_content.replace('/mnt/tmp/XXX/XXX.qcow2', f'{os.getcwd()}/lb.qcow2')
-
-    interface_template = """
-    <interface type='bridge'>
-      <source bridge='XXX'/>
-      <model type='virtio'/>
-    </interface>
-    """
-
-    interfaces_required = """
-    <interface type='bridge'>
-      <source bridge='LAN1'/>
-      <model type='virtio'/>
-    </interface>
-    <interface type='bridge'>
-      <source bridge='LAN2'/>
-      <model type='virtio'/>
-    </interface>
-    """
-
-    xml_content = xml_content.replace(interface_template, interfaces_required)
-
-    with open(f"lb.xml", 'w') as xml:
-        xml.write(xml_content)
-
-    print('\033[92m' + "El fichero xml de configuración requerido para el balanceador de carga ha sido creado" + '\033[0m')
 
 
 def _create_bridges():
